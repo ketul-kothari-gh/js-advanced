@@ -9,17 +9,6 @@ JS engine creates EC that manages the code (in lexial env) that is currently run
     - Global execution context
     - Function execution context.
 
-# Object
-In JS - object is just collection of name value pairs.
-const sample = {
-    Name: "Dummy object",
-    Address: {
-        Flat: 90,
-        Street: "Main"
-    }
-
-}
-
 # Global execution context, Global object and this
 When any js code is ran, it starts running in global execution context. Any code not part of function runs in global execution context. 
 Global execution context creates - Global object and this.
@@ -84,4 +73,35 @@ object.is(true, 1); returns false
 Provides list of various use cases https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness
 
 # Referencing multiple files in html
-Variables with same name defined at global scope in JS files referenced in html will override each other based on order of JS files.
+Variables with the same name defined at global scope in multiple JS files referenced in html will override each other based on order referencing (script tag).
+
+# Objects
+In JS - object is just collection of name value pairs.
+const sample = {
+    Name: "Dummy object",
+    Address: {
+        Flat: 90,
+        Street: "Main"
+    }
+}
+
+# Function are Objects. 
+1. Have two special properties - name and code (internal). When defining function - we create object and assign value to these two properties. code property can be invoked using ().
+2. Can create custom properties on functions.
+3. Can pass as argument, use as return value in functions.
+
+# Function statement and Function expressions
+Expression - unit of code that do some work and return value
+ex: test === "dummy", test = "Test" --> returns value --> true/fase, Test 
+Statement - unit of code that do some work
+if (test === "dummy") {} --> if is statement that contains expression -- does not return value
+
+function statement --> function show() { ... }
+function expression --> let showVar = function() { ... } // creates function object, returns and assign to showVar variable
+
+Function expressions are not hoisted. Only variable will. Cannot call it before declaration.
+
+# Pass by value and Pass by reference
+All primitive types except string (Boolean, Number etc) are passed by value.
+All objects (including special objects --- functions, arrays ) and string are passed by reference.
+string in JS are immutable pass by reference don't work.
