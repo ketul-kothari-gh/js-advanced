@@ -104,4 +104,4 @@ Function expressions are not hoisted. Only variable will. Cannot call it before 
 # Pass by value and Pass by reference
 All primitive types except string (Boolean, Number etc) are passed by value.
 All objects (including special objects --- functions, arrays ) and string are passed by reference.
-string in JS are immutable pass by reference don't work.
+string in JS are immutable, os even though strings are passed by reference - any operation to change them within the called method will result in creating new string and the passed string variable will remain as it is.
