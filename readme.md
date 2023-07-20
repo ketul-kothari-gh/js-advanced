@@ -11,7 +11,7 @@ JS engine creates EC that manages the code (in lexial env) that is currently run
 
 # Global execution context, Global object and this
 When any js code is ran, it starts running in global execution context. Any code not part of function runs in global execution context. 
-Global execution context creates - Global object and this.
+Global execution context creates - Global object (and more -- details below)
 In case if Js is running in browser, Global object is Window. this refers to Window.
 In Node Js running on server, Global object is different.
 
@@ -19,9 +19,14 @@ Any global variable or declaration (code not inside function), is available thro
 
 # Excution context phases
 Creation phase - 
-1. global object and this created
-2. Reference to outer environment (based on where is the code sitting physically ex: function created at global level when exeuted -- it's exectuion context's outer env. reference will point to global env.)
-3. Hositing - check code and setup memory for functions and variables in the managed lexical env (aka hoisting). For variables values are not yet loaded -- undefined. 
+1. this reference created
+    Global execution context: this points to global
+    Function execution context: what this will point to depends on how function is executed
+2. If it is global execution context - then global object is also created. 
+3. Reference to outer environment (based on where is the code sitting physically ex: function created at global level when exeuted -- it's exectuion context's outer env. reference will point to global env.)
+4. Variable environment - JS allocates memory to functions and variables based on lexical postion. Performs hoisting.
+    Hositing - check code and setup memory for functions and variables declared in the managed lexical env (aka hoisting). For variables values are not yet loaded -- undefined.
+5. arguments - only in case of function exectuion context. Represent parameters. An Array like structure but not array. Supports index, length etc but not all array features.
 
 Execution phase - 
 1. Starts executing JS line by line. Loads variable values when encountered.
@@ -35,9 +40,6 @@ Execution phase -
 undefined is special value in JS (represented by keyword undefined) - which implies value is not yet set for the variable
 All variables identified during create phase of execution context has undefined set in the memory
 
-# Variable environment
-Variable environment is where the variable is declared. Based on that - that variable is loaded in respective execution context.
-
 # Scope and Scope Chain
 In Scope means variable/method is available to be used.
 
@@ -45,15 +47,7 @@ Each execution context has outer Execution context reference created in creation
 
 While searching for variable engine will check the scope chain based recursively until either the reference is found or chain end is reached i.e. when hitting outer reference of Global EC.
 
-# ES6 let, const vs var
-1. let and const support block scope, var does not.
-2. let and const are also hoisted (Engine will setup memory for variables, function in EC creation phase before actual execution.) but Engine does not allow accessing let and const variables before declaration the way it allows var.
-3. let and const does not allow redeclaring variables.
 
-JS supports three scopes:
-Block scope
-Function scope
-Global scope
 
 # Single threaded
 JS engine is single threaded and hence follows synchronous behavior.
@@ -90,6 +84,11 @@ const sample = {
 2. Can create custom properties on functions.
 3. Can pass as argument, use as return value in functions.
 
+Javascript does not support function overloading (as function are first class objects).
+JS does not enforce sending all parameters, end parameters if not given are treated as undefined. (because of hoisting)
+JS also does not support named parameters. But similar functionality can be achieved using Object destructuring.
+JS allows default values for parameters. 
+
 # Function statement and Function expressions
 Expression - unit of code that do some work and return value
 ex: test === "dummy", test = "Test" --> returns value --> true/fase, Test 
@@ -101,7 +100,53 @@ function expression --> let showVar = function() { ... } // creates function obj
 
 Function expressions are not hoisted. Only variable will. Cannot call it before declaration.
 
+BigArrow functions are not exactly same as function. It is ES 6 feature and there are some core differences.
+
 # Pass by value and Pass by reference
 All primitive types except string (Boolean, Number etc) are passed by value.
 All objects (including special objects --- functions, arrays ) and string are passed by reference.
 string in JS are immutable, os even though strings are passed by reference - any operation to change them within the called method will result in creating new string and the passed string variable will remain as it is.
+
+# this
+Everytime a execution context is created (Global or function EC), this reference is created.
+In case of Global EC - this points to global object.
+In case of Function EC - 
+    If function is on global context - this refers to global.
+    If function is on direclty on object (or function) - this refers to the object
+    *** Special case *** If a function is created inside another function attached to object, this points to globalObject.
+
+bind, call and apply can be used to set this reference for function.
+bind is useful in currying - passing value for some of the parameters and creating new function that just requires remaining parameters.
+can be used in function borrowing - that is using function from some object that are not defined on the concerned object.
+
+# IIFE - Immediately invoked function expression
+Inovkes function immediately from where it is declared
+IIFE creates a separation and do not pollute global object. Very useful when using multiple script files. (libraries)
+
+let and const creates block level variable.
+
+# Closures
+Closures are applicable when outer function returns inner function that can be invoked later.
+In such cases, though outer function has finished execution and its EC is popped off the stack,
+inner function when executed can still access outer function's local variable/ parameters.
+JS Engine creates closure which is combination of inner function and variable environment of lexical outer function.
+Closures are often used in:
+1. async functionality
+2. module pattern - encapsulating data using functions
+3. singleton in JS
+4. Used heavily in libraries and frameworks to implement above mentioned and others
+
+*** Closures are not supported in a lot of OOPS programming languages but is common in functional programming languges ***
+
+
+# ES 6 
+# ES6 let, const vs var
+1. let and const support block scope, var does not. function creates function scope variable.
+2. let and const are also hoisted (Engine will setup memory for variables, function in EC creation phase before actual execution.) but Engine does not allow accessing let and const variables before declaration the way it allows var.
+3. let and const does not allow redeclaring variables.
+
+
+JS supports three scopes:
+Block scope (introduced in ES 6)
+Function scope
+Global scope
