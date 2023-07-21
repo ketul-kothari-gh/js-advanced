@@ -138,6 +138,19 @@ Closures are often used in:
 
 *** Closures are not supported in a lot of OOPS programming languages but is common in functional programming languges ***
 
+# Inheritance
+JS follows prototypal inheritance and not classical (used by C#, Java etc).
+In prototypal inheritance - each object has special property that refers to it's parent known as prototype.
+When searching for property/method on object, JS first searches on object, if not found search on its prototype and so on.
+
+Apart from primitve types, everything is an object.
+custom object, array, function
+function -> Empty function is its prototype -> this defines method like call, bind etc
+Array -> Empty array is its prototype - defines various methods like index, map etc
+
+
+
+
 
 # ES 6 
 # ES6 let, const vs var
